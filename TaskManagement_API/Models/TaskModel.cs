@@ -11,8 +11,8 @@ namespace TaskManagement_API.Models
         public string TaskName { get; set; }
         public int ParentTaskID { get; set; }
         public string ParentTaskName { get; set; }
-        public Nullable<System.DateTime> StartDate { get; set; }
-        public Nullable<System.DateTime> EndDate { get; set; }
+        public string StartDate { get; set; }
+        public string EndDate { get; set; }
         public Nullable<int> Priority { get; set; }
         public bool IsCompleted { get; set; }
     }

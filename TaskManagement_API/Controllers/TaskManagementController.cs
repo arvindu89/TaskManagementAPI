@@ -13,8 +13,8 @@ namespace TaskManagement_API.Controllers
     {
         [HttpGet]
         [ActionName("Search")]
-        public HttpResponseMessage SearchTask(string taskName = null, string parentTaskName = null, DateTime? startDate = null,
-            DateTime? endDate = null,int? priorityFrom = null, int? priorityTo = null)
+        public HttpResponseMessage SearchTask(string taskName = null, string parentTaskName = null, string startDate = null,
+            string endDate = null,int? priorityFrom = null, int? priorityTo = null)
         {            
             try
             {

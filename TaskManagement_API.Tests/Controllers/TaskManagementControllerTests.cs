@@ -44,8 +44,8 @@ namespace TaskManagement_API.Controllers.Tests
             TaskModel task = new TaskModel();
             task.TaskID = 1;
             task.TaskName = "Task 1";
-            task.StartDate = DateTime.Now;
-            task.EndDate = DateTime.Now.AddDays(2);
+            task.StartDate = DateTime.Now.ToString("dd-MMMM-yyyy");
+            task.EndDate = DateTime.Now.AddDays(2).ToString("dd-MMMM-yyyy");
             task.IsCompleted = false;
             task.Priority = 10;
             task.ParentTaskID = 1;
@@ -67,8 +67,8 @@ namespace TaskManagement_API.Controllers.Tests
 
             TaskModel task = new TaskModel();            
             task.TaskName = "Task " + randomNumber;
-            task.StartDate = DateTime.Now;
-            task.EndDate = DateTime.Now.AddDays(2);
+            task.StartDate = DateTime.Now.ToString("dd-MMMM-yyyy");
+            task.EndDate = DateTime.Now.AddDays(2).ToString("dd-MMMM-yyyy");
             task.IsCompleted = false;
             task.Priority = 10;
             task.ParentTaskID = 1;

@@ -7,7 +7,7 @@ namespace TaskManagement_API.Models
 {
     public class ParentTaskModel
     {
-        public int ParentTaskID { get; set; }
-        public string ParentTaskName { get; set; }
+        public int value { get; set; }
+        public string label { get; set; }
     }
 }

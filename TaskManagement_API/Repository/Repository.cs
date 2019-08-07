@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity.SqlServer;
+using System.Globalization;
 using System.Linq;
 using System.Web;
 using TaskManagement_API.Models;
@@ -14,17 +16,20 @@ namespace TaskManagement_API.Repository
             _entity = new ExampleData_USInsuranceEntities();
         }
 
-        public List<TaskModel> SearchTask(string taskName, DateTime? startDate, 
-            DateTime? endDate, string parentTaskName, int? priorityFrom, int? priorityTo)
+        public List<TaskModel> SearchTask(string taskName, string startDate, 
+            string endDate, string parentTaskName, int? priorityFrom, int? priorityTo)
         {
+            CultureInfo provider = CultureInfo.InvariantCulture;
             var query = (from t in _entity.Tasks
                          join p in _entity.ParentTasks on t.Parent_ID equals p.Parent_ID
                          select new TaskModel()
                          {
                              TaskID = t.Task_ID,
                              TaskName = t.Task1,
-                             EndDate = t.End_Date,
-                             StartDate = t.Start_Date,
+                             EndDate = t.End_Date.HasValue? SqlFunctions.DateName("day", t.End_Date).Trim() + "-" +
+        SqlFunctions.DateName("MM", t.End_Date).Trim() + "-" + SqlFunctions.DateName("year", t.End_Date) : null,
+                             StartDate = t.Start_Date.HasValue ? SqlFunctions.DateName("day", t.Start_Date).Trim() + "-" +
+        SqlFunctions.DateName("MM", t.Start_Date).Trim() + "-" + SqlFunctions.DateName("year", t.Start_Date) : null,
                              IsCompleted = t.IsCompleted,
                              ParentTaskID = t.Parent_ID,
                              ParentTaskName = p.Parent_Task,
@@ -60,21 +65,22 @@ namespace TaskManagement_API.Repository
             List<ParentTaskModel> parentTasks = (from p in _entity.ParentTasks
                                                  select new ParentTaskModel
                                                  {
-                                                     ParentTaskID = p.Parent_ID,
-                                                     ParentTaskName = p.Parent_Task
+                                                     value = p.Parent_ID,
+                                                     label = p.Parent_Task
                                                  }).ToList();
             return parentTasks;
         }
 
         public int AddNewTask(TaskModel taskModel)
         {
+            CultureInfo provider = CultureInfo.InvariantCulture;
             Task task = new Task();
             task.Task1 = taskModel.TaskName;
             task.IsCompleted = taskModel.IsCompleted;
             task.Parent_ID = taskModel.ParentTaskID;
             task.Priority = taskModel.Priority;
-            task.Start_Date = taskModel.StartDate;
-            task.End_Date = taskModel.EndDate;
+            task.Start_Date = DateTime.ParseExact(taskModel.StartDate, "dd-MMMM-yyyy", provider);
+            task.End_Date = DateTime.ParseExact(taskModel.EndDate, "dd-MMMM-yyyy", provider);
             _entity.Tasks.Add(task);
             _entity.SaveChanges();
 
@@ -83,6 +89,7 @@ namespace TaskManagement_API.Repository
 
         public bool UpdateTask(TaskModel taskModel)
         {
+            CultureInfo provider = CultureInfo.InvariantCulture;
             Task task = (from t in _entity.Tasks
                          where t.Task_ID == taskModel.TaskID
                          select t).FirstOrDefault();
@@ -92,8 +99,8 @@ namespace TaskManagement_API.Repository
                 task.IsCompleted = taskModel.IsCompleted;
                 task.Parent_ID = taskModel.ParentTaskID;
                 task.Priority = taskModel.Priority;
-                task.Start_Date = taskModel.StartDate;
-                task.End_Date = taskModel.EndDate;              
+                task.Start_Date = DateTime.ParseExact(taskModel.StartDate, "dd-MMMM-yyyy", provider);
+                task.End_Date = DateTime.ParseExact(taskModel.EndDate, "dd-MMMM-yyyy", provider);
                 _entity.SaveChanges();
                 return true;
             }
